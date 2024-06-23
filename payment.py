@@ -3,13 +3,13 @@ import datetime as dt
 import json
 
 class Pago:
-    def __init__(self, titulo: str, estudiantes: list):
+    def __init__(self, titulo: str, person: list):
         self.titulo = titulo
-        self.dict_nombres = {"Nombres": estudiantes}
+        self.dict_nombres = {"Nombres": person}
         # Inicialización eficiente de la lista de pagos con ceros
-        self.dict_valores = {"Pagos": [0] * len(estudiantes)}
-        dict_unidades = {"Unidades": [str()] * len(estudiantes)}
-        self.tiempo_pago = {"Tiempo de Pago":[str()] * len(estudiantes)}
+        self.dict_valores = {"Pagos": [0] * len(person)}
+        dict_unidades = {"Unidades": [str()] * len(person)}
+        self.tiempo_pago = {"Tiempo de Pago":[str()] * len(person)}
         # Actualización del diccionario de nombres con los valores de pagos y
         # unidad
         self.dict_nombres.update(self.dict_valores)
@@ -115,16 +115,16 @@ class Lista:
             for count, name in enumerate(self.lista[lista]["Nombres"]):
                 print(f"{count + 1}.- {name}")
 
-            estudiantes = input("Seleccione el estudiante: ")
+            person = input("Seleccione la persona: ")
             cobrar = input("¿Cuánto pagó? ").split()
-            self.lista[lista]["Pagos"][int(estudiantes) - 1] = float(cobrar[0])
-            self.lista[lista]["Unidades"][int(estudiantes) - 1] = cobrar[1]
+            self.lista[lista]["Pagos"][int(person) - 1] = float(cobrar[0])
+            self.lista[lista]["Unidades"][int(person) - 1] = cobrar[1]
             fecha_actual = dt.datetime.now()
             fecha_actual_str = dt.datetime.strftime(fecha_actual, "%d %b %Y %H:%M")
-            self.lista[lista]["Tiempo de Pago"][int(estudiantes) - 1] = fecha_actual_str
+            self.lista[lista]["Tiempo de Pago"][int(person) - 1] = fecha_actual_str
 
             print("--------------------------")
-            print(self.lista[lista]["Nombres"][int(estudiantes) - 1], "ha pagado",
+            print(self.lista[lista]["Nombres"][int(person) - 1], "ha pagado",
             cobrar[0], cobrar[1])
             print("--------------------------\n")
             repeat = input("¿Cobrarás a alguien más? y/n: ")
@@ -163,7 +163,7 @@ class Lista:
             self.lista.update(self.lista)
             with open(r"./data_payment.json", "w") as edit_list:
                 json.dump(self.lista, edit_list, indent=4)
-                print("Estudiantes añadidos\n")
+                print("person añadidos\n")
 
         self.menu("Añadir", addStudents)
 
@@ -172,7 +172,7 @@ def main():
         print("1. Leer listas")
         print("2. Crear nueva lista")
         print("3. Cobrar")
-        print("4. Agregar estudiantes")
+        print("4. Agregar persona")
         print("5. Salir\n")
 
         option = int(input("Seleccione la opción: "))
