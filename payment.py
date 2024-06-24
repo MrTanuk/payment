@@ -7,13 +7,13 @@ class Pago:
         self.titulo = titulo
         self.dict_nombres = {"Nombres": person}
         # Inicialización eficiente de la lista de pagos con ceros
-        self.dict_valores = {"Pagos": [0] * len(person)}
-        dict_unidades = {"Unidades": [str()] * len(person)}
+        self.dict_valores_bs = {"Bs": [0] * len(person)}
+        self.dict_valores_dolar = {"$": [0] * len(person)}
         self.tiempo_pago = {"Tiempo de Pago":[str()] * len(person)}
         # Actualización del diccionario de nombres con los valores de pagos y
         # unidad
-        self.dict_nombres.update(self.dict_valores)
-        self.dict_nombres.update(dict_unidades)
+        self.dict_nombres.update(self.dict_valores_bs)
+        self.dict_nombres.update(self.dict_valores_dolar)
         self.dict_nombres.update(self.tiempo_pago)
 
     def savePage(self):
@@ -117,8 +117,12 @@ class Lista:
 
             person = input("Seleccione la persona: ")
             cobrar = input("¿Cuánto pagó? ").split()
-            self.lista[lista]["Pagos"][int(person) - 1] = float(cobrar[0])
-            self.lista[lista]["Unidades"][int(person) - 1] = cobrar[1]
+            if cobrar[1].lower() == "bs":
+                self.lista[lista]["Bs"][int(person) - 1] = float(cobrar[0])
+            elif cobrar[1] == "$":
+                self.lista[lista]["$"][int(person) - 1] = float(cobrar[0])
+            else:
+                print("Error. Formato incorrecto: Bolívares o dolares")
             fecha_actual = dt.datetime.now()
             fecha_actual_str = dt.datetime.strftime(fecha_actual, "%d %b %Y %H:%M")
             self.lista[lista]["Tiempo de Pago"][int(person) - 1] = fecha_actual_str
