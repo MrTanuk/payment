@@ -119,8 +119,6 @@ class Lista:
             person = input("Seleccione la persona: ")
             cobrar = input("¿Cuánto pagó? ").split()
             value, unidad = float(cobrar[0]), cobrar[1]
-            print(value)
-            print(unidad)
             if unidad.lower() == "bs":
                 self.lista[lista]["Bs"][int(person) - 1] = float(value)
                 self.lista[lista]["$"][int(person) - 1] = round(price_dolar/value, 2)
