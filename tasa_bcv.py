@@ -7,5 +7,4 @@ tree = web.parse(urlopen(url)).getroot()
 
 price_dolar = tree.xpath(".//div[@id='dolar']/div/div/div[@class='col-sm-6 col-xs-6 centrado']/strong/text()")
 price_dolar = price_dolar[0].replace(",", ".").strip()
-
-print(round(float(price_dolar), 2))
+price_dolar = round(float(price_dolar), 2)

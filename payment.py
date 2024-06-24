@@ -1,4 +1,5 @@
 from prettytable import PrettyTable
+from tasa_bcv import price_dolar
 import datetime as dt
 import json
 
@@ -117,10 +118,15 @@ class Lista:
 
             person = input("Seleccione la persona: ")
             cobrar = input("¿Cuánto pagó? ").split()
-            if cobrar[1].lower() == "bs":
-                self.lista[lista]["Bs"][int(person) - 1] = float(cobrar[0])
-            elif cobrar[1] == "$":
-                self.lista[lista]["$"][int(person) - 1] = float(cobrar[0])
+            value, unidad = float(cobrar[0]), cobrar[1]
+            print(value)
+            print(unidad)
+            if unidad.lower() == "bs":
+                self.lista[lista]["Bs"][int(person) - 1] = float(value)
+                self.lista[lista]["$"][int(person) - 1] = round(price_dolar/value, 2)
+            elif unidad == "$":
+                self.lista[lista]["$"][int(person) - 1] = float(value)
+                self.lista[lista]["Bs"][int(person) - 1] = round(price_dolar*value, 2)
             else:
                 print("Error. Formato incorrecto: Bolívares o dolares")
             fecha_actual = dt.datetime.now()
