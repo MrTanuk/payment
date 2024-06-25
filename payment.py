@@ -121,7 +121,7 @@ class Lista:
             value, unidad = float(cobrar[0]), cobrar[1]
             if unidad.lower() == "bs":
                 self.lista[lista]["Bs"][int(person) - 1] = float(value)
-                self.lista[lista]["$"][int(person) - 1] = round(price_dolar/value, 2)
+                self.lista[lista]["$"][int(person) - 1] = round(value/price_dolar, 2)
             elif unidad == "$":
                 self.lista[lista]["$"][int(person) - 1] = float(value)
                 self.lista[lista]["Bs"][int(person) - 1] = round(price_dolar*value, 2)
