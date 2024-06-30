@@ -1,5 +1,5 @@
 from prettytable import PrettyTable
-from tasa_bcv import price_dolar
+from tasa_bcv import getPriceDolar
 import datetime as dt
 import json
 
@@ -21,7 +21,7 @@ class Pago:
         save_data = {self.titulo: self.dict_nombres}
         try:
             # Leer los datos existentes primero
-            with open(r"./data_payment.json", "r") as read_json:
+            with open(r"./data_payment/data_payment.json", "r") as read_json:
                 data = json.load(read_json)
                 # Asegúrate de que 'self.titulo' no esté en 'data.keys()'
                 while self.titulo in data.keys():
@@ -49,7 +49,7 @@ class Pago:
             # Si hay un error de decodificación, asumir que el archivo está vacío o corrupto
             data = save_data
             # Escribir los datos actualizados al archivo, usando el modo 'w' para sobrescribir
-        with open(r"./data_payment.json", "w") as save_json:
+        with open(r"./data_payment/data_payment.json", "w") as save_json:
             json.dump(data, save_json, indent=4)
             print(f"\nLista llamada '{self.titulo}' guardado\n")
 
@@ -59,7 +59,7 @@ class Lista:
 
     def loadData(self):
         try:
-            with open(r"./data_payment.json", "r") as read_data:
+            with open(r"./data_payment/data_payment.json", "r") as read_data:
                 self.lista = json.load(read_data)
 
         except FileNotFoundError:
@@ -110,7 +110,7 @@ class Lista:
             print(f"{key:}".center(50))
             print(table,"\n")
 
-    def chargePage(self):
+    def chargePage(self, price_dolar):
         def selectStudent(lista):
             print("Nombres:")
             for count, name in enumerate(self.lista[lista]["Nombres"]):
@@ -142,7 +142,7 @@ class Lista:
             if repeat == "y":
                 selectStudent(lista)
             else:
-                with open(r"./data_payment.json", "w") as save_cobrar:
+                with open(r"./data_payment/data_payment.json", "w") as save_cobrar:
                     json.dump(self.lista, save_cobrar, indent=4)
                     print("Actualizado con éxito\n")
 
@@ -171,7 +171,7 @@ class Lista:
                 print("Escribiste mal. Intente de nuevo")
 
             self.lista.update(self.lista)
-            with open(r"./data_payment.json", "w") as edit_list:
+            with open(r"./data_payment/data_payment.json", "w") as edit_list:
                 json.dump(self.lista, edit_list, indent=4)
                 print("person añadidos\n")
 
@@ -200,7 +200,11 @@ def main():
 
             case 3:
                 if inven.loadData():
-                    inven.chargePage()
+                    price_dolar = getPriceDolar()
+                    if price_dolar == None:
+                        pass
+                    else:
+                        inven.chargePage(price_dolar)
 
             case 4:
                 if inven.loadData():
