@@ -16,7 +16,7 @@ class Lista:
             return False
 
         except json.decoder.JSONDecodeError:
-            print("Esta vacío la base de dato. Añada datos")
+            print("Esta vacío la base de dato. Añada datos\n")
             return False
 
         else:

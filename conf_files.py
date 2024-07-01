@@ -1,11 +1,11 @@
 import os
 
-def loadDirectories():
+def checkFiles():
     actual_dir = os.getcwd()
 
     if not os.path.exists(actual_dir + "/datas_files"):
         print("No existe la carpeta datas_files.")
-        datas_files_dir = actual_dir + "/datas_files"
+        datas_files_dir = actual_dir + "/datas_files/"
         os.mkdir(datas_files_dir)
         print("Carpeta datas_files creada.\n")
 

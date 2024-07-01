@@ -40,7 +40,7 @@ class Pago:
                 data.update(save_data)
 
         except FileNotFoundError:
-            data = save_data
+            print("No se encuentra la base de datos.")
 
         except json.decoder.JSONDecodeError:
             # Si hay un error de decodificación, asumir que el archivo está vacío o corrupto

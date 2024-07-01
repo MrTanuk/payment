@@ -1,10 +1,10 @@
 from list_payment import Lista
 from payment import Pago
 from tasa_bcv import importPriceDolar
-from conf_dir import loadDirectories
+from conf_files import checkFiles
 
 def main():
-    loadDirectories()
+    checkFiles()
     while True:
         print("1. Leer listas")
         print("2. Crear nueva lista")
