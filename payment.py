@@ -1,7 +1,6 @@
 from prettytable import PrettyTable
-from tasa_bcv import getPriceDolar
-import datetime as dt
-import json
+from tasa_bcv import json, dt, getPriceDolar
+from conf_dir import loadDirectories
 
 class Pago:
     def __init__(self, titulo: str, person: list):
@@ -21,7 +20,7 @@ class Pago:
         save_data = {self.titulo: self.dict_nombres}
         try:
             # Leer los datos existentes primero
-            with open(r"./data_payment/data_payment.json", "r") as read_json:
+            with open(r"./datas_files/data_payment.json", "r") as read_json:
                 data = json.load(read_json)
                 # Asegúrate de que 'self.titulo' no esté en 'data.keys()'
                 while self.titulo in data.keys():
@@ -49,7 +48,7 @@ class Pago:
             # Si hay un error de decodificación, asumir que el archivo está vacío o corrupto
             data = save_data
             # Escribir los datos actualizados al archivo, usando el modo 'w' para sobrescribir
-        with open(r"./data_payment/data_payment.json", "w") as save_json:
+        with open(r"./datas_files/data_payment.json", "w") as save_json:
             json.dump(data, save_json, indent=4)
             print(f"\nLista llamada '{self.titulo}' guardado\n")
 
@@ -59,7 +58,7 @@ class Lista:
 
     def loadData(self):
         try:
-            with open(r"./data_payment/data_payment.json", "r") as read_data:
+            with open(r"./datas_files/data_payment.json", "r") as read_data:
                 self.lista = json.load(read_data)
 
         except FileNotFoundError:
@@ -75,7 +74,7 @@ class Lista:
 
     def chooseTable(self):
         for data_cobrar in self.lista:
-            print("- ", data_cobrar)
+            print("._", data_cobrar)
         lista = input("\nEscoja el nombre de la lista: ")
 
         while lista not in self.lista.keys():
@@ -116,8 +115,9 @@ class Lista:
             for count, name in enumerate(self.lista[lista]["Nombres"]):
                 print(f"{count + 1}.- {name}")
 
-            person = input("Seleccione la persona: ")
-            cobrar = input("¿Cuánto pagó? ").split()
+            person = input("Seleccione el índice de la persona en la lista: ")
+            print("¿Cuánto pagó? Ejemplo: '43 Bs', '2.5 $")
+            cobrar = input("Indique monto: ").split()
             value, unidad = float(cobrar[0]), cobrar[1]
             if unidad.lower() == "bs":
                 self.lista[lista]["Bs"][int(person) - 1] = float(value)
@@ -140,7 +140,7 @@ class Lista:
             if repeat == "y":
                 selectStudent(lista)
             else:
-                with open(r"./data_payment/data_payment.json", "w") as save_cobrar:
+                with open(r"./datas_files/data_payment.json", "w") as save_cobrar:
                     json.dump(self.lista, save_cobrar, indent=4)
                     print("Actualizado con éxito\n")
 
@@ -169,13 +169,14 @@ class Lista:
                 print("Escribiste mal. Intente de nuevo")
 
             self.lista.update(self.lista)
-            with open(r"./data_payment/data_payment.json", "w") as edit_list:
+            with open(r"./datas_files/data_payment.json", "w") as edit_list:
                 json.dump(self.lista, edit_list, indent=4)
                 print("person añadidos\n")
 
         self.menu("Añadir", addStudents)
 
 def main():
+    loadDirectories()
     while True:
         print("1. Leer listas")
         print("2. Crear nueva lista")
@@ -199,10 +200,7 @@ def main():
             case 3:
                 if inven.loadData():
                     price_dolar = getPriceDolar()
-                    if price_dolar == None:
-                        pass
-                    else:
-                        inven.chargePage(price_dolar)
+                    inven.chargePage(price_dolar)
 
             case 4:
                 if inven.loadData():
