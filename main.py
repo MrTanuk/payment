@@ -10,7 +10,9 @@ def main():
         print("2. Crear nueva lista")
         print("3. Cobrar")
         print("4. Agregar persona")
-        print("5. Salir\n")
+        print("5. Eliminar personas")
+        print("6. Eliminar lista")
+        print("7. Salir\n")
 
         option = int(input("Seleccione la opción: "))
         inven = Lista()
@@ -37,6 +39,13 @@ def main():
                     inven.addStudent(price_dolar)
 
             case 5:
+                if inven.loadData():
+                    inven.deletePerson()
+            
+            case 6:
+                if inven.loadData():
+                    inven.deleteList()
+            case 7:
                 break
 
             case _:

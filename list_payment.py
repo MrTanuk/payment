@@ -24,18 +24,34 @@ class Lista:
 
     def chooseTable(self):
         for data_cobrar in self.lista:
-            print("._", data_cobrar)
+            print(". ", data_cobrar)
         lista = input("\nEscoja el nombre de la lista: ")
-
         while lista not in self.lista.keys():
             print("\nNo se encuentra en la lista. Intente de nuevo")
             lista = input("Escoja la lista: ")
         return lista
 
+    def chooseName(self, lista):
+        print("Nombres:")
+        for count, name in enumerate(self.lista[lista]["Nombres"]):
+            print(f"{count + 1}.- {name}")
+
+    def chooseRepeat(self, mainAction, lista):
+        repeat = input("Seleccionará a alguien más? y/n: ")
+
+        if repeat == "y":
+            mainAction(lista)
+        else:
+            self.lista.update(self.lista)
+            with open(r"./datas_files/data_payment.json", "w") as edit_list:
+                json.dump(self.lista, edit_list, indent=4)
+            print("Finalizado.\n")
+
     def menu(self, name_action, mainAction):
         print(f"1. - Para {name_action}")
         print("2. - Para verificar cómo va la lista")
-        print("3. - Para salir\n\n")
+        print("3. - Para salir\n")
+
         option = int(input("Seleccione: "))
         match option:
             case 1:
@@ -45,7 +61,6 @@ class Lista:
             case 2:
                 self.checkDataOnTable()
                 self.menu(name_action, mainAction)
-
             case 3:
                 return
             case _:
@@ -61,9 +76,7 @@ class Lista:
 
     def chargePage(self, price_dolar):
         def selectStudent(lista):
-            print("Nombres:")
-            for count, name in enumerate(self.lista[lista]["Nombres"]):
-                print(f"{count + 1}.- {name}")
+            self.chooseName(lista)
 
             person = input("Seleccione el índice de la persona en la lista: ")
             print("¿Cuánto pagó? Ejemplo: '43 Bs', '2.5 $")
@@ -85,15 +98,8 @@ class Lista:
             print(self.lista[lista]["Nombres"][int(person) - 1], "ha pagado",
             cobrar[0], cobrar[1])
             print("--------------------------\n")
-            repeat = input("¿Cobrarás a alguien más? y/n: ")
 
-            if repeat == "y":
-                selectStudent(lista)
-            else:
-                with open(r"./datas_files/data_payment.json", "w") as save_cobrar:
-                    json.dump(self.lista, save_cobrar, indent=4)
-                    print("Actualizado con éxito\n")
-
+            self.chooseRepeat(selectStudent, lista)
         self.menu("cobrar", selectStudent)
 
     def addStudent(self, price_dolar):
@@ -122,19 +128,32 @@ class Lista:
                 self.lista[lista]["Tiempo de Pago"].append("")
             else:
                 print("Escribiste mal. Intente de nuevo")
-                
+
             fecha_actual = dt.datetime.now()
             fecha_actual_str = dt.datetime.strftime(fecha_actual, "%d %b %Y %H:%M")
             self.lista[lista]["Tiempo de Pago"].append(fecha_actual_str)
-            
-            repeat = input("¿Cobrarás a alguien más? y/n: ")
 
-            if repeat == "y":
-                addStudents(lista)
-            else:
-                self.lista.update(self.lista)
-                with open(r"./datas_files/data_payment.json", "w") as edit_list:
-                    json.dump(self.lista, edit_list, indent=4)
-                print("persona añadida\n")
+            self.chooseRepeat(addStudents, lista)
 
         self.menu("Añadir", addStudents)
+    
+    def deletePerson(self):
+        def selectPerson(lista):
+            self.chooseName(lista)
+
+            person = input("Seleccione el índice de la persona en la lista: ")
+            del self.lista[lista]["Nombres"][int(person) - 1]
+            del self.lista[lista]["Bs"][int(person) - 1]
+            del self.lista[lista]["$"][int(person) - 1]
+            del self.lista[lista]["Tiempo de Pago"][int(person) - 1]
+            print("Persona borrada correctamente\n")
+
+            self.chooseRepeat(selectPerson, lista)
+        self.menu("eliminar persona", selectPerson)
+
+    def deleteList(self):
+        delete_lista = self.chooseTable()
+        del self.lista[delete_lista]
+        with open(r"./datas_files/data_payment.json", "w") as edit_list:
+            json.dump(self.lista, edit_list, indent=4)
+        print("Lista elminada correctamente\n")
