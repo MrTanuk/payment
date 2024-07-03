@@ -4,17 +4,17 @@ def checkFiles():
     actual_dir = os.getcwd()
 
     if not os.path.exists(actual_dir + "/datas_files"):
-        print("No existe la carpeta datas_files.")
+        print("The datas_files folder does not exist.")
         datas_files_dir = actual_dir + "/datas_files/"
         os.mkdir(datas_files_dir)
-        print("Carpeta datas_files creada.\n")
+        print("datas_files folder has been created.\n")
 
         if not os.path.exists(actual_dir + "conf_date.json"):
-            print("No existe el archivo conf_date.json.")
+            print("No conf_date.json file exist.")
             open(datas_files_dir + "conf_date.json", "x")
-            print("archivos conf_date.json creada\n")
+            print("conf_date.json file has been created\n")
 
         if not os.path.exists(actual_dir + "data_payment.json"):
-            print("No existe el archivo data_payment.json.")
+            print("The data_payment.json file does not exist")
             open(datas_files_dir + "data_payment.json", "x")
-            print("archivos data_payment.json creada\n")
+            print("data_payment.json file has been created\n")

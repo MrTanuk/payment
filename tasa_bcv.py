@@ -15,15 +15,15 @@ def getPriceDolar():
             tree = web.parse(urlopen(url)).getroot()
         except URLError:
             attempts += 1
-            print("Intentando obtener precio del dolar")
-            print(f"Intento {attempts}/{max_attempts}: Error de conexión. Reintentando...")
+            print("Trying to obtain dollar price...")
+            print(f"Attempt  {attempts}/{max_attempts}: Connection error. Retrying...")
         else:
             price_dolar = tree.xpath(".//div[@id='dolar']/div/div/div[@class='col-sm-6 col-xs-6 centrado']/strong/text()")
             price_dolar = price_dolar[0].replace(",", ".").strip()
             price_dolar = round(float(price_dolar), 2)
             return price_dolar
     else:
-        print("No se pudo conectar al sitio web después de varios intentos. Verifica tu conexión a Internet.")
+        print("Could not connect to the website after several attempts. Check your Internet connection.")
         return None
 
 def importPriceDolar():
@@ -36,23 +36,24 @@ def importPriceDolar():
             date_saved = json.load(f)
 
     except FileNotFoundError:
-        print("No existe la base de datos donde se almacena el precio del dolar. \nSe ha creado la base de datos")
+        print("The database where the dollar price is stored does not exist. \nBut now \
+              the database has been created")
         date_saved = save_date
 
         with open(path_dir, "w") as f:
             json.dump(save_date, f, indent=4)
 
     except json.decoder.JSONDecodeError:
-        print("No se encuentra el precio del dolar en la base de datos. Se añadirá al del día de hoy.")
+        print("The price of the dollar is not found in the database. It will be added to today's price.")
         date_saved = save_date
 
         with open(path_dir, "w") as f:
             json.dump(save_date, f, indent=4)
 
     if date_saved["Date"] != str(actual_date) or "Value Dolar" not in date_saved:
-        print("Buscando precio del dolar...")
+        print("Looking for dollar price....")
         value_dolar = getPriceDolar()
-        print("Terminado\n")
+        print("Completed\n")
         save_date["Value Dolar"] = value_dolar
 
         with open(path_dir, "w") as f:

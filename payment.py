@@ -1,51 +1,50 @@
 import json
 
-class Pago:
-    def __init__(self, titulo: str, person: list):
-        self.titulo = titulo
-        self.dict_nombres = {"Nombres": person}
+class Charge:
+    def __init__(self, title_list: str, people: list):
+        self.title_list = title_list
+        self.dict_names = {"Name": people}
         # Inicialización eficiente de la lista de pagos con ceros
-        self.dict_valores_bs = {"Bs": [0] * len(person)}
-        self.dict_valores_dolar = {"$": [0] * len(person)}
-        self.tiempo_pago = {"Tiempo de Pago":[str()] * len(person)}
+        self.dict_price_bs = {"Bs": [0] * len(people)}
+        self.dict_price_dollar = {"$": [0] * len(people)}
+        self.payment_time = {"Payment Time":[str()] * len(people)}
         # Actualización del diccionario de nombres con los valores de pagos y
         # unidad
-        self.dict_nombres.update(self.dict_valores_bs)
-        self.dict_nombres.update(self.dict_valores_dolar)
-        self.dict_nombres.update(self.tiempo_pago)
+        self.dict_names.update(self.dict_price_bs)
+        self.dict_names.update(self.dict_price_dollar)
+        self.dict_names.update(self.payment_time)
 
-    def savePage(self):
-        save_data = {self.titulo: self.dict_nombres}
+    def saveCharge(self):
+        save_data = {self.title_list: self.dict_names}
         try:
-            # Leer los datos existentes primero
+            # Read first the existing data
             with open(r"./datas_files/data_payment.json", "r") as read_json:
                 data = json.load(read_json)
-                # Asegúrate de que 'self.titulo' no esté en 'data.keys()'
-                while self.titulo in data.keys():
-                    print("Vas a sobreescribir una lista ya existente")
-                    print("Intente de nuevo\n")
-                    print("1. Cambiar de nombre de titulo")
-                    print("2. Salir\n")
-                    opcion = int(input("Seleccione: "))
+                # Asegúrate de que 'self.title_list' no esté en 'data.keys()'
+                while self.title_list in data.keys():
+                    print("You are going to overwrite an existing list")
+                    print("1. Rename the list")
+                    print("2. Exit\n")
+                    opcion = int(input("Select: "))
                     if opcion == 1:
-                        nuevo_titulo = input("Escriba el título: ")
-                        self.titulo = nuevo_titulo
+                        nuevo_title_list = input("Type the title: ")
+                        self.title_list = nuevo_title_list
                     elif opcion == 2:
                         return
                     else:
-                        print("No es válida la selección")
+                        print("The selection is not valid")
 
-                save_data = {self.titulo: self.dict_nombres}
-                # Actualizar los datos con la nueva lista
+                save_data = {self.title_list: self.dict_names}
+                # Update the data with the new list
                 data.update(save_data)
 
         except FileNotFoundError:
-            print("No se encuentra la base de datos.")
+            print("Database not found.")
 
         except json.decoder.JSONDecodeError:
-            # Si hay un error de decodificación, asumir que el archivo está vacío o corrupto
+            # If there is a decoding error, assume that the file is empty or corrupt.
             data = save_data
-            # Escribir los datos actualizados al archivo, usando el modo 'w' para sobrescribir
+            # Write the updated data to the file, to overwrite
         with open(r"./datas_files/data_payment.json", "w") as save_json:
             json.dump(data, save_json, indent=4)
-            print(f"\nLista llamada '{self.titulo}' guardado\n")
+            print(f"\nList named'{self.title_list}' has beed saved\n")

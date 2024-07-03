@@ -1,20 +1,20 @@
 from list_payment import Lista
-from payment import Pago
+from payment import Charge
 from tasa_bcv import importPriceDolar
 from conf_files import checkFiles
 
 def main():
     checkFiles()
     while True:
-        print("1. Leer listas")
-        print("2. Crear nueva lista")
-        print("3. Cobrar")
-        print("4. Agregar persona")
-        print("5. Eliminar personas")
-        print("6. Eliminar lista")
-        print("7. Salir\n")
+        print("1. Read lists")
+        print("2. Create new list")
+        print("3. Charge")
+        print("4. Add people_to_list")
+        print("5. Delete people_to_list")
+        print("6. Delete list")
+        print("7. Exit\n")
 
-        option = int(input("Seleccione la opción: "))
+        option = int(input("Select an option: "))
         inven = Lista()
         match option:
             case 1:
@@ -22,11 +22,11 @@ def main():
                     inven.checkDataOnTable()
 
             case 2:
-                nombre = input("Nombre para la lista: ")
-                print("Escribe los nombres separado por coma junto con su espacio: ")
-                estud = input("Nombres: ").split(", ")
-                pago = Pago(nombre, estud)
-                pago.savePage()
+                name_to_list = input("Name for the list: ")
+                print("Type the names separated by comma along with their spacing: ")
+                people_to_list = input("Names: ").split(", ")
+                pago = Charge(name_to_list, people_to_list)
+                pago.saveCharge()
 
             case 3:
                 if inven.loadData():
@@ -36,7 +36,7 @@ def main():
             case 4:
                 if inven.loadData():
                     price_dolar = importPriceDolar()
-                    inven.addStudent(price_dolar)
+                    inven.addPerson(price_dolar)
 
             case 5:
                 if inven.loadData():
@@ -49,7 +49,7 @@ def main():
                 break
 
             case _:
-                print("Error. Ingrese de acuerdo al menu")
+                print("Error. Enter according to the menu")
 
 if __name__ == "__main__":
     main()
