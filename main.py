@@ -31,12 +31,14 @@ def main():
             case 3:
                 if inven.loadData():
                     price_dolar = importPriceDolar()
-                    inven.chargePage(price_dolar)
+                    if price_dolar:
+                        inven.chargePage(price_dolar)
 
             case 4:
                 if inven.loadData():
                     price_dolar = importPriceDolar()
-                    inven.addPerson(price_dolar)
+                    if price_dolar:
+                        inven.addPerson(price_dolar)
 
             case 5:
                 if inven.loadData():

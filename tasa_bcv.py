@@ -24,7 +24,7 @@ def getPriceDolar():
             return price_dolar
     else:
         print("Could not connect to the website after several attempts. Check your Internet connection.")
-        return None
+        return False
 
 def importPriceDolar():
     path_dir = "datas_files/conf_date.json"
@@ -50,7 +50,7 @@ def importPriceDolar():
         with open(path_dir, "w") as f:
             json.dump(save_date, f, indent=4)
 
-    if date_saved["Date"] != str(actual_date) or "Value Dolar" not in date_saved:
+    if date_saved["Date"] != str(actual_date) or "Value Dolar" not in date_saved or date_saved["Value Dolar"] == False:
         print("Looking for dollar price....")
         value_dolar = getPriceDolar()
         print("Completed\n")
