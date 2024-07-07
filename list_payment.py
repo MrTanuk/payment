@@ -1,4 +1,6 @@
+from conf_files import cleanScreen
 from prettytable import PrettyTable
+import re
 import json
 import datetime as dt
 
@@ -7,13 +9,14 @@ class Lista:
         self.lista = {}
 
     def loadData(self):
+        cleanScreen()
         try:
             with open(r"./datas_files/data_payment.json", "r") as read_data:
                 self.lista = json.load(read_data)
             if self.lista == {}:
                 print("No database exists. Add data\n")
                 return False
-    
+
         except FileNotFoundError:
             print("No database exists. Add data\n")
             return False
@@ -21,26 +24,29 @@ class Lista:
         except json.decoder.JSONDecodeError:
             print("The database is empty. Add data\n")
             return False
-        
+
         else:
             return True
 
     def chooseTable(self):
+        cleanScreen()
         for name_in_list in self.lista:
             print(". ", name_in_list)
-        lista = input("\Choose the name from the list: ")
-        while lista not in self.lista.keys():
-            print("\nit is not in the list. Try again")
-            lista = input("Choose the list: ")
-        return lista
+        lista = input("\nChoose the name from the list: ")
+        if lista not in self.lista.keys():
+            print("\nit is not in the list. Try again\n")
+            return False
+        else:
+            return lista
 
     def chooseName(self, lista):
-        print("Names:")
+        cleanScreen()
+        print("Names:\n")
         for index_name, name in enumerate(self.lista[lista]["Name"]):
             print(f"{index_name + 1}.- {name}")
 
     def chooseRepeat(self, mainAction, lista):
-        select_option = input("Will you select anyone else? y/n: ")
+        select_option = input("\nWill you select anyone else? y/n: ")
 
         if select_option == "y":
             mainAction(lista)
@@ -48,7 +54,7 @@ class Lista:
             self.lista.update(self.lista)
             with open(r"./datas_files/data_payment.json", "w") as edit_list:
                 json.dump(self.lista, edit_list, indent=4)
-            print("Completed.\n")
+            cleanScreen()
 
     def menu(self, name_action, mainAction):
         print(f"1. - {name_action}")
@@ -59,17 +65,22 @@ class Lista:
         match option:
             case 1:
                 lista = self.chooseTable()
-                mainAction(lista)
-                return
+                if lista:
+                    mainAction(lista)
+                else:
+                    return
             case 2:
                 self.checkDataOnTable()
                 self.menu(name_action, mainAction)
             case 3:
+                cleanScreen()
                 return
             case _:
+                cleanScreen()
                 print("Error. Enter according to the menu\n")
 
     def checkDataOnTable(self):
+        cleanScreen()
         for title_list, datas_on_table in self.lista.items():
             table = PrettyTable(datas_on_table.keys())
             for i in range(len(datas_on_table["Name"])):
@@ -81,39 +92,52 @@ class Lista:
         def selectPerson(lista):
             self.chooseName(lista)
 
-            select_person = input("Select the index of the person in the list: ")
-            print("How much did the person pay? Example: '43 Bs', '2.5 $'.")
-            charge_person = input("Indicate amount: ").split()
+            select_person = int(input("\nSelect the index of the person in the list: "))
+            cleanScreen()
+            print("How much did the person pay? Example: '43bs', '2.5$'")
+            parts_money = input("Indicate amount: ")
+            charge_person = re.split(r"(\d+)", parts_money)
+            charge_person = [parts.strip() for parts in charge_person if parts]
+            print(charge_person)
             value_money, unity_money = float(charge_person[0]), charge_person[1]
             if unity_money.lower() == "bs":
-                self.lista[lista]["Bs"][int(select_person) - 1] = float(value_money)
-                self.lista[lista]["$"][int(select_person) - 1] = round(value_money/price_dolar, 2)
+                self.lista[lista]["Bs"][select_person - 1] = float(value_money)
+                self.lista[lista]["$"][select_person - 1] = round(value_money/price_dolar, 2)
             elif unity_money == "$":
-                self.lista[lista]["$"][int(select_person) - 1] = float(value_money)
-                self.lista[lista]["Bs"][int(select_person) - 1] = round(price_dolar*value_money, 2)
+                self.lista[lista]["$"][select_person - 1] = float(value_money)
+                self.lista[lista]["Bs"][select_person - 1] = round(price_dolar*value_money, 2)
             else:
                 print("Error. Incorrect format: Bolivars or dollars.")
+                return
+
             current_date = dt.datetime.now()
             current_date_str = dt.datetime.strftime(current_date, "%d %b %Y %H:%M")
-            self.lista[lista]["Payment Time"][int(select_person) - 1] = current_date_str
+            self.lista[lista]["Payment Time"][select_person - 1] = current_date_str
 
+            cleanScreen()
             print("--------------------------")
-            print(self.lista[lista]["Name"][int(select_person) - 1], "has paid",
-            charge_person[0], charge_person[1])
-            print("--------------------------\n")
+            print(self.lista[lista]["Name"][select_person - 1], "has paid",
+            value_money, unity_money)
+            print("--------------------------")
 
             self.chooseRepeat(selectPerson, lista)
         self.menu("Charge", selectPerson)
 
     def addPerson(self, price_dolar):
         def addPeople(lista):
+            cleanScreen()
             add_person = input("Type the name: ")
             self.lista[lista]["Name"].append(add_person)
+            cleanScreen()
             option = input("Is the person going to pay at once? y/n: ").lower()
+            cleanScreen()
  
             if option == "y":
-                print("How much did the person pay? Example: '43 Bs', '2.5 $'.")
-                charge_person = input("Indicate amount: ").split()
+                print("How much did the person pay? Example: '43bs', '2.5$")
+                parts_money = input("Indicate amount: ")
+                charge_person = re.split(r"(\d+)", parts_money)
+                charge_person = [parts.strip() for parts in charge_person if parts]
+                print(charge_person)
                 value_money, unity_money = float(charge_person[0]), charge_person[1]
                 if unity_money.lower() == "bs":
                     self.lista[lista]["Bs"].append(float(value_money))
@@ -122,7 +146,8 @@ class Lista:
                     self.lista[lista]["$"].append(float(value_money))
                     self.lista[lista]["Bs"].append(round(price_dolar*value_money, 2))
                 else:
-                    print("Error. Incorrect format: Bolivars or dollars.")
+                    print("Error. Incorrect format: Bolivars or dollars.\n")
+                    return
     
             elif option == "n":
                 print("Perfect. Let's continue")
@@ -131,15 +156,20 @@ class Lista:
                 self.lista[lista]["Payment Time"].append("")
             else:
                 print("You spelled it wrong. Try again")
+                return
 
             current_date = dt.datetime.now()
             current_date_str = dt.datetime.strftime(current_date, "%d %b %Y %H:%M")
             self.lista[lista]["Payment Time"].append(current_date_str)
 
-            self.chooseRepeat(addPeople, lista)
+            cleanScreen()
+            print("--------------------------")
+            print(add_person, "has been added")
+            print("--------------------------")
 
+            self.chooseRepeat(addPeople, lista)
         self.menu("Add", addPeople)
-    
+
     def deletePerson(self):
         def selectPerson(lista):
             self.chooseName(lista)
@@ -149,14 +179,18 @@ class Lista:
             del self.lista[lista]["Bs"][int(index_person) - 1]
             del self.lista[lista]["$"][int(index_person) - 1]
             del self.lista[lista]["Payment Time"][int(index_person) - 1]
-            print("Person deleted correctly\n")
-
+            
+            cleanScreen()
+            print("\nPerson deleted correctly")
             self.chooseRepeat(selectPerson, lista)
         self.menu("Delete person", selectPerson)
 
     def deleteList(self):
-        delete_list = self.chooseTable()
-        del self.lista[delete_list]
-        with open(r"./datas_files/data_payment.json", "w") as edit_list:
-            json.dump(self.lista, edit_list, indent=4)
-        print("Correctly completed list\n")
+        def deleteListFinal(delete_list):
+            del self.lista[delete_list]
+            with open(r"./datas_files/data_payment.json", "w") as edit_list:
+                json.dump(self.lista, edit_list, indent=4)
+
+            cleanScreen()
+            print("\nCorrectly completed list")
+        self.menu("Delete list", deleteListFinal)

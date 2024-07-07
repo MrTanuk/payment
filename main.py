@@ -1,7 +1,7 @@
 from list_payment import Lista
 from payment import Charge
 from tasa_bcv import importPriceDolar
-from conf_files import checkFiles
+from conf_files import checkFiles, cleanScreen
 
 def main():
     checkFiles()
@@ -9,8 +9,8 @@ def main():
         print("1. Read lists")
         print("2. Create new list")
         print("3. Charge")
-        print("4. Add people_to_list")
-        print("5. Delete people_to_list")
+        print("4. Add Person in list")
+        print("5. Delete Person in list")
         print("6. Delete list")
         print("7. Exit\n")
 
@@ -22,15 +22,19 @@ def main():
                     inven.checkDataOnTable()
 
             case 2:
-                name_to_list = input("Name for the list: ")
-                print("Type the names separated by comma along with their spacing: ")
-                people_to_list = input("Names: ").split(", ")
-                pago = Charge(name_to_list, people_to_list)
+                cleanScreen()
+                name_list = input("Name for the list: ")
+                cleanScreen()
+                print("Type the names separated by comma\n")
+                names_people = input("Names: ")
+                names_people_to_list = [name.strip() for name in names_people.split(",")]
+                pago = Charge(name_list, names_people_to_list)
                 pago.saveCharge()
 
             case 3:
                 if inven.loadData():
                     price_dolar = importPriceDolar()
+                    cleanScreen()
                     if price_dolar:
                         inven.chargePage(price_dolar)
 

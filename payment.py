@@ -1,4 +1,5 @@
 import json
+from conf_files import cleanScreen
 
 class Charge:
     def __init__(self, title_list: str, people: list):
@@ -22,10 +23,10 @@ class Charge:
                 data = json.load(read_json)
                 # Asegúrate de que 'self.title_list' no esté en 'data.keys()'
                 while self.title_list in data.keys():
-                    print("You are going to overwrite an existing list")
+                    print("\nYou are going to overwrite an existing list\n")
                     print("1. Rename the list")
                     print("2. Exit\n")
-                    opcion = int(input("Select: "))
+                    opcion = int(input("Select the index: "))
                     if opcion == 1:
                         nuevo_title_list = input("Type the title: ")
                         self.title_list = nuevo_title_list
@@ -40,6 +41,7 @@ class Charge:
 
         except FileNotFoundError:
             print("Database not found.")
+            return
 
         except json.decoder.JSONDecodeError:
             # If there is a decoding error, assume that the file is empty or corrupt.
@@ -47,4 +49,6 @@ class Charge:
             # Write the updated data to the file, to overwrite
         with open(r"./datas_files/data_payment.json", "w") as save_json:
             json.dump(data, save_json, indent=4)
-            print(f"\nList named'{self.title_list}' has beed saved\n")
+
+        cleanScreen()
+        print(f"List named '{self.title_list}' has beed saved\n")
