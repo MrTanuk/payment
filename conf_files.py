@@ -5,7 +5,7 @@ def cleanScreen():
     if os.name == "posix":
         os.system("clear")
     else:
-        os.system("clear")
+        os.system("cls")
 
 def checkFiles():
     actual_dir = os.getcwd()
