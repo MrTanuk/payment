@@ -1,1 +1,4 @@
-This is for taking control of a payment of any list you have
+This is for taking control of a payment lists
+
+dependencies
+pip install -r requirements.txt
