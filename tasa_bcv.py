@@ -15,7 +15,7 @@ def getPriceDolar():
             tree = web.parse(urlopen(url)).getroot()
         except URLError:
             attempts += 1
-            print("Trying to obtain dollar price...")
+            print("Trying to obtain dollar price...\n")
             print(f"Attempt  {attempts}/{max_attempts}: Connection error. Retrying...")
         else:
             price_dolar = tree.xpath(".//div[@id='dolar']/div/div/div[@class='col-sm-6 col-xs-6 centrado']/strong/text()")
@@ -23,7 +23,7 @@ def getPriceDolar():
             price_dolar = round(float(price_dolar), 2)
             return price_dolar
     else:
-        print("Could not connect to the website after several attempts. Check your Internet connection.")
+        print("\nCould not connect to the website after several attempts. Check your Internet connection.\n")
         return False
 
 def importPriceDolar():
@@ -53,12 +53,14 @@ def importPriceDolar():
     if date_saved["Date"] != str(actual_date) or "Value Dolar" not in date_saved or date_saved["Value Dolar"] == False:
         print("Looking for dollar price....")
         value_dolar = getPriceDolar()
-        print("Completed\n")
-        save_date["Value Dolar"] = value_dolar
 
-        with open(path_dir, "w") as f:
-            json.dump(save_date, f, indent=4)
-        return value_dolar
+        if value_dolar:
+            print("Completed\n")
+            save_date["Value Dolar"] = value_dolar
+
+            with open(path_dir, "w") as f:
+                json.dump(save_date, f, indent=4)
+            return value_dolar
 
     else:
         with open(path_dir, "r") as f:

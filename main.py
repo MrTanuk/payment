@@ -33,8 +33,8 @@ def main():
 
             case 3:
                 if inven.loadData():
-                    price_dolar = importPriceDolar()
                     cleanScreen()
+                    price_dolar = importPriceDolar()
                     if price_dolar:
                         inven.chargePage(price_dolar)
 
