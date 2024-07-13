@@ -1,5 +1,6 @@
 import json
-from conf_files import cleanScreen
+import conf_files
+import conf_files
 
 class Charge:
     def __init__(self, title_list: str, people: list):
@@ -23,14 +24,17 @@ class Charge:
                 data = json.load(read_json)
                 # Asegúrate de que 'self.title_list' no esté en 'data.keys()'
                 while self.title_list in data.keys():
-                    print("\nYou are going to overwrite an existing list\n")
+                    conf_files.cleanScreen()
+                    print("You are going to overwrite an existing list\n")
                     print("1. Rename the list")
                     print("2. Exit\n")
                     opcion = int(input("Select the index: "))
                     if opcion == 1:
+                        conf_files.cleanScreen()
                         nuevo_title_list = input("Type the title: ")
                         self.title_list = nuevo_title_list
                     elif opcion == 2:
+                        conf_files.cleanScreen()
                         return
                     else:
                         print("The selection is not valid")
@@ -50,5 +54,5 @@ class Charge:
         with open(r"./datas_files/data_payment.json", "w") as save_json:
             json.dump(data, save_json, indent=4)
 
-        cleanScreen()
+        conf_files.cleanScreen()
         print(f"List named '{self.title_list}' has beed saved\n")

@@ -1,10 +1,10 @@
-from list_payment import Lista
-from payment import Charge
-from tasa_bcv import importPriceDolar
-from conf_files import checkFiles, cleanScreen
+import list_payment
+import payment
+import dolar_rate
+import conf_files
 
 def main():
-    checkFiles()
+    conf_files.cleanScreen()
     while True:
         print("1. Read lists")
         print("2. Create new list")
@@ -15,32 +15,32 @@ def main():
         print("7. Exit\n")
 
         option = int(input("Select an option: "))
-        inven = Lista()
+        inven = list_payment.Lista()
         match option:
             case 1:
                 if inven.loadData():
                     inven.checkDataOnTable()
 
             case 2:
-                cleanScreen()
+                conf_files.cleanScreen()
                 name_list = input("Name for the list: ")
-                cleanScreen()
+                conf_files.cleanScreen()
                 print("Type the names separated by comma\n")
                 names_people = input("Names: ")
                 names_people_to_list = [name.strip() for name in names_people.split(",")]
-                pago = Charge(name_list, names_people_to_list)
+                pago = payment.Charge(name_list, names_people_to_list)
                 pago.saveCharge()
 
             case 3:
                 if inven.loadData():
-                    cleanScreen()
-                    price_dolar = importPriceDolar()
+                    conf_files.cleanScreen()
+                    price_dolar = dolar_rate.importPriceDolar()
                     if price_dolar:
                         inven.chargePage(price_dolar)
 
             case 4:
                 if inven.loadData():
-                    price_dolar = importPriceDolar()
+                    price_dolar = dolar_rate.importPriceDolar()
                     if price_dolar:
                         inven.addPerson(price_dolar)
 

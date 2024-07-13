@@ -96,7 +96,7 @@ class Lista:
             cleanScreen()
             print("How much did the person pay? Example: '43bs', '2.5$'")
             parts_money = input("Indicate amount: ")
-            charge_person = re.split(r"(\d+)", parts_money)
+            charge_person = re.split(r"(\d+\.\d+|\d+)", parts_money)
             charge_person = [parts.strip() for parts in charge_person if parts]
             print(charge_person)
             value_money, unity_money = float(charge_person[0]), charge_person[1]
