@@ -33,36 +33,33 @@ def saveCache(path_dir, price_dolar, date_submitted):
     with open(path_dir, 'w') as archivo:
         json.dump(datos, archivo)
 
-def getPriceDolar(value_dolar_on_data):
+def getPriceDolar():
     url = "https://www.bcv.org.ve/"
     max_attempts = 3
     attempts = 0
-    if value_dolar_on_data:
-        while attempts < max_attempts:
-            try:
-                tree = web.parse(urlopen(url)).getroot()
-            except URLError:
-                attempts += 1
-                print("Trying to obtain dollar price...\n")
-                print(f"Attempt {attempts}/{max_attempts}: Connection error. Retrying...")
-            else:
-                try:
-                    price_dolar = tree.xpath(".//div[@id='dolar']/div/div/div[@class='col-sm-6 col-xs-6 centrado']/strong/text()")
-                    price_dolar = price_dolar[0].replace(",", ".").strip()
-                    price_dolar = round(float(price_dolar), 2)
-
-                    date_submitted = tree.xpath("//*[@id='block-views-47bbee0af9473fcf0d6df64198f4df6b']/div/div[2]/div/div[8]/span/@content")
-                    date_submitted = "".join(date_submitted)
-                    return price_dolar, date_submitted
-                
-                except (IndexError, ValueError) as e:
-                    print(f"Error parsing data: {e}")
-                    return False, None
+    while attempts < max_attempts:
+        try:
+            tree = web.parse(urlopen(url)).getroot()
+        except URLError:
+            attempts += 1
+            print("Trying to obtain dollar price...\n")
+            print(f"Attempt {attempts}/{max_attempts}: Connection error. Retrying...")
         else:
-            print("\nCould not connect to the website after several attempts. Check your Internet connection.\n")
-            return False, None
+            try:
+                price_dolar = tree.xpath(".//div[@id='dolar']/div/div/div[@class='col-sm-6 col-xs-6 centrado']/strong/text()")
+                price_dolar = price_dolar[0].replace(",", ".").strip()
+                price_dolar = round(float(price_dolar), 2)
+
+                date_submitted = tree.xpath("//*[@id='block-views-47bbee0af9473fcf0d6df64198f4df6b']/div/div[2]/div/div[8]/span/@content")
+                date_submitted = "".join(date_submitted)
+                return price_dolar, date_submitted
+            
+            except (IndexError, ValueError) as e:
+                print(f"Error parsing data: {e}")
+                return False, None
     else:
-        return value_dolar_on_data, True
+        print("\nCould not connect to the website after several attempts. Check your Internet connection.\n")
+        return False, None
 
 def importPriceDolar():
     path_dir_conf_date = conf_files.completedPath()
@@ -70,12 +67,10 @@ def importPriceDolar():
     path_dir_conf_date += "datas_files/conf_date.json"
 
     datas_cache = loadCache(path_dir_conf_date)
-    value_dolar_on_data = datas_cache["Value Dolar"]
-    
 
     if datas_cache:
         date_cache = dt.datetime.strptime(datas_cache["Date"], "%Y-%m-%dT%H:%M:%S%z")
-        price_dolar, date_submitted = getPriceDolar(value_dolar_on_data)
+        price_dolar, date_submitted = getPriceDolar()
         if price_dolar and date_submitted:
             date_submitted_dt = dt.datetime.strptime(date_submitted, "%Y-%m-%dT%H:%M:%S%z")
             if date_submitted_dt <= date_cache:
@@ -90,7 +85,7 @@ def importPriceDolar():
 
     elif datas_cache == None:
         print("Obtaining data from the website")
-        price_dolar, date_submitted = getPriceDolar(datas_cache)
+        price_dolar, date_submitted = getPriceDolar()
         if price_dolar and date_submitted:
             saveCache(path_dir_conf_date, price_dolar, date_submitted)
         return price_dolar
