@@ -1,6 +1,5 @@
 import json
 import conf_files
-import conf_files
 
 class Charge:
     def __init__(self, title_list: str, people: list):
@@ -18,9 +17,11 @@ class Charge:
 
     def saveCharge(self):
         save_data = {self.title_list: self.dict_names}
+        self.path_data_payment = conf_files.completedPath()
+        self.path_data_payment += "datas_files/data_payment.json"
         try:
             # Read first the existing data
-            with open(r"./datas_files/data_payment.json", "r") as read_json:
+            with open(self.path_data_payment, "r") as read_json:
                 data = json.load(read_json)
                 # Asegúrate de que 'self.title_list' no esté en 'data.keys()'
                 while self.title_list in data.keys():
@@ -44,14 +45,14 @@ class Charge:
                 data.update(save_data)
 
         except FileNotFoundError:
-            print("Database not found.")
+            print("Database not found. Search if the file data_payment.json exist inside the data_file dir")
             return
 
         except json.decoder.JSONDecodeError:
             # If there is a decoding error, assume that the file is empty or corrupt.
             data = save_data
             # Write the updated data to the file, to overwrite
-        with open(r"./datas_files/data_payment.json", "w") as save_json:
+        with open(self.path_data_payment, "w") as save_json:
             json.dump(data, save_json, indent=4)
 
         conf_files.cleanScreen()

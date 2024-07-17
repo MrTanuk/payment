@@ -1,4 +1,4 @@
-from conf_files import cleanScreen
+from conf_files import cleanScreen, completedPath
 from prettytable import PrettyTable
 import re
 import json
@@ -7,18 +7,20 @@ import datetime as dt
 class Lista:
     def __init__(self):
         self.lista = {}
+        self.path_data_payment = completedPath()
+        self.path_data_payment += "/datas_files/data_payment.json"
 
     def loadData(self):
         cleanScreen()
         try:
-            with open(r"./datas_files/data_payment.json", "r") as read_data:
+            with open(self.path_data_payment, "r") as read_data:
                 self.lista = json.load(read_data)
             if self.lista == {}:
                 print("No database exists. Add data\n")
                 return False
 
         except FileNotFoundError:
-            print("No database exists. Add data\n")
+            print("Database not found. Search if the file data_payment.json exist inside the data_file dir\n")
             return False
 
         except json.decoder.JSONDecodeError:
@@ -52,7 +54,7 @@ class Lista:
             mainAction(lista)
         else:
             self.lista.update(self.lista)
-            with open(r"./datas_files/data_payment.json", "w") as edit_list:
+            with open(self.path_data_payment, "w") as edit_list:
                 json.dump(self.lista, edit_list, indent=4)
             cleanScreen()
 
@@ -181,16 +183,16 @@ class Lista:
             del self.lista[lista]["Payment Time"][int(index_person) - 1]
             
             cleanScreen()
-            print("\nPerson deleted correctly")
+            print("Person deleted correctly")
             self.chooseRepeat(selectPerson, lista)
         self.menu("Delete person", selectPerson)
 
     def deleteList(self):
         def deleteListFinal(delete_list):
             del self.lista[delete_list]
-            with open(r"./datas_files/data_payment.json", "w") as edit_list:
+            with open(self.path_data_payment, "w") as edit_list:
                 json.dump(self.lista, edit_list, indent=4)
 
             cleanScreen()
-            print("\nCorrectly completed list")
+            print("Correctly completed list")
         self.menu("Delete list", deleteListFinal)
